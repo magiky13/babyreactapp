@@ -8,7 +8,7 @@ var GetThatGit = React.createClass({
     getInitialState: function() {
         return {};
     },
-    componentDidMount: function() {
+    fetchData: function() {
         var url = `https://api.github.com/users/${this.props.username}`;
         
         var that = this;
@@ -21,22 +21,34 @@ var GetThatGit = React.createClass({
             }
         );
     },
+    componentDidMount: function() {
+        this.fetchData() ;
+        this.componentDidUpdate();
+    },
+    componentDidUpdate: function(something){
+        if(something.username !== this.props.username) {
+            this.fetchData();
+        }
+    },
     render: function() {
         if (!this.state.user) {
             return <div>LOADING INFO...</div>;
+            
         }
+        else {
         
         var user = this.state.user;
         
         return ( 
 
         <div class="github-user">
-            <img src={user.avatar_url} />
+            <img src={this.state.user.avatar_url} />
              <div class="github-user__info">
-                <p>{user.name}</p>
-                <p>{user.bio}</p>
+                <p>{this.props.user}</p>
+                <p>{this.state.user.bio ? <p>Bio: {this.state.user.bio}</p>: <p> No Bio for {this.props.user}</p> }</p>
             </div>
         </div> );
+        }
     }
 });
 
